@@ -1,0 +1,21 @@
+version: "3.7"
+services:
+    column_db10:
+        image: theikkila/analytics-postgresql
+        ports:
+          - "127.0.0.1:54320:5432"
+    column_db11:
+        build:
+            context: .
+            dockerfile: Dockerfile_column_db11
+        ports:
+            - "127.0.0.1:54321:5432"
+    db:
+        image: postgres
+        ports:
+            - "127.0.0.1:5432:5432"
+    db11:
+        image: postgres:11
+        ports:
+            - "127.0.0.1:54322:5432"
+        
