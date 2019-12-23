@@ -1,3 +1,99 @@
+# 課題
+## DATE型、日付カラムだと速いのか？
+## Timestampはどうなるか
+## 単純にレコード数が多い場合は差が出た
+## ヒットするレコードがそこそこの場合はどうなるか？？
+
+列指向のDB　PostgresSQL11 列指向
+
+対象がすべてのレコード800万レコードの場合
+postgres=# SELECT
+    my_status,
+   sum(my_score)
+FROM
+   user_anime_list
+GROUP BY
+    my_status;
+ my_status |    sum
+-----------+-----------
+         0 |       693
+         1 |  10125113
+         2 | 321110361
+         3 |   6839605
+         4 |   7457074
+         5 |         7
+         6 |   1870173
+        33 |         5
+        55 |         0
+(9 rows)
+
+Time: 9974.595 ms (00:09.975)
+postgres=#
+
+
+---------------------------
+
+行指向DB　PostgresSQL11
+postgres=# SELECT
+    my_status,
+   sum(my_score)
+FROM
+   user_anime_list
+GROUP BY
+    my_status;
+ my_status |    sum
+-----------+-----------
+         0 |       693
+         1 |  10125113
+         2 | 321110361
+         3 |   6839605
+         4 |   7457074
+         5 |         7
+         6 |   1870173
+        33 |         5
+        55 |         0
+(9 rows)
+
+Time: 10009.746 ms (00:10.010)
+
+-----------------------------
+
+行指向DB　PostgreSQL12
+postgres=# SELECT
+postgres-#     my_status,
+postgres-#    sum(my_score)
+postgres-# FROM
+postgres-#    user_anime_list
+postgres-# GROUP BY
+postgres-#     my_status;
+ my_status |    sum
+-----------+-----------
+         0 |       693
+         1 |  10125113
+         2 | 321110361
+         3 |   6839605
+         4 |   7457074
+         5 |         7
+         6 |   1870173
+        33 |         5
+        55 |         0
+(9 rows)
+
+Time: 29186.852 ms (00:29.187)
+
+# レコード挿入された場所が後ろの人にWhere句で絞った場合どうなるか？
+---------
+SELECT
+my_status,
+sum(my_score)
+FROM
+user_anime_list
+where username = 'DittoGang'
+GROUP BY
+my_status;
+
+
+------------------------
 
 普通のPostgresに接続
 ```
@@ -37,6 +133,7 @@ CREATE EXTENSION cstore_fdw;
 
 -- create server object
 CREATE SERVER cstore_server FOREIGN DATA WRAPPER cstore_fdw;
+
 
 -- create foreign table
 CREATE FOREIGN TABLE customer_reviews

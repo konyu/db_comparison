@@ -1,21 +1,52 @@
 version: "3.7"
 services:
-    column_db10:
-        image: theikkila/analytics-postgresql
-        ports:
-          - "127.0.0.1:54320:5432"
+    # column_db10:
+    #     image: theikkila/analytics-postgresql
+    #     ports:
+    #       - "127.0.0.1:54320:5432"
     column_db11:
         build:
             context: .
             dockerfile: Dockerfile_column_db11
         ports:
             - "127.0.0.1:54321:5432"
-    db:
-        image: postgres
-        ports:
-            - "127.0.0.1:5432:5432"
-    db11:
+        volumes:
+            - ./home:/home
+            - column_db11_data:/var/lib/postgresql/data
+    row_db11:
         image: postgres:11
         ports:
             - "127.0.0.1:54322:5432"
-        
+        volumes:
+            - ./home:/home
+            - row_db11_data:/var/lib/postgresql/data
+    row_db12_data:
+        image: postgres:12
+        ports:
+            - "127.0.0.1:5432:5432"
+        volumes:
+            - ./home:/home
+            - row_db12_data:/var/lib/postgresql/data
+    # TODO 時系列DB
+    # influxdb:
+    #     build:
+    #         context: .
+    #         dockerfile: Dockerfile_influxdb
+    #     ports:
+    #         - 8086:8086
+    #         - 8083:8086
+    #         - 2003:2003
+    #     volumes:
+    #         - ./home:/home
+    #         - influxdb_data:/var/lib/influxdb
+    # chronograf:
+    #     image: chronograf:alpine
+    #     ports:
+    #         - "8888:8888"
+    #     links:
+    #         - influxdb
+volumes:
+    column_db11_data:
+    row_db11_data:
+    row_db12_data:
+    # influxdb_data:

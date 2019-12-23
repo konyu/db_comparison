@@ -1,0 +1,19 @@
+FROM influxdb
+RUN apt-get update && apt-get install -y wget
+
+RUN wget https://dl.influxdata.com/telegraf/releases/telegraf_1.13.0-1_amd64.deb
+RUN dpkg -i telegraf_1.13.0-1_amd64.deb
+RUN telegraf -sample-config -input-filter file -output-filter influxdb > file.conf
+
+# 常に起動するようにしたい
+RUN service telegraf start
+RUN telegraf --config home/file.conf
+
+#protobuf-c-compiler libprotobuf-c-dev wget make  build-essential postgresql-server-dev-11
+#RUN apt-get update && apt-get install -y protobuf-c-compiler libprotobuf-c0-dev wget make postgresql-server-dev-10 build-essential
+#RUN wget https://github.com/citusdata/postgresql-hll/archive/v2.10.2.tar.gz -O /tmp/hll.tar.gz && cd /tmp && tar -xzvf hll.tar.gz
+#RUN cd /tmp/postgresql-hll-2.10.2 && make && make install
+
+#RUN wget https://github.com/citusdata/cstore_fdw/archive/v1.6.2.tar.gz -O /tmp/cstore.tar.gz && cd /tmp && tar -xzvf cstore.tar.gz
+#RUN cd /tmp/cstore_fdw-1.6.2 && make && make install
+#RUN echo "shared_preload_libraries = 'cstore_fdw'" >> /usr/share/postgresql/postgresql.conf.sample
