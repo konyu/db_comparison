@@ -28,25 +28,33 @@ services:
             - ./home:/home
             - row_db12_data:/var/lib/postgresql/data
     # TODO 時系列DB
-    # influxdb:
-    #     build:
-    #         context: .
-    #         dockerfile: Dockerfile_influxdb
-    #     ports:
-    #         - 8086:8086
-    #         - 8083:8086
-    #         - 2003:2003
-    #     volumes:
-    #         - ./home:/home
-    #         - influxdb_data:/var/lib/influxdb
-    # chronograf:
-    #     image: chronograf:alpine
-    #     ports:
-    #         - "8888:8888"
-    #     links:
-    #         - influxdb
+    influxdb:
+        build:
+            context: .
+            dockerfile: Dockerfile_influxdb
+        ports:
+            - 8086:8086
+            - 8083:8086
+            - 2003:2003
+        volumes:
+            - ./home:/home
+            - influxdb_data:/var/lib/influxdb
+    grafana:
+        image: grafana/grafana
+        environment:
+            - GF_SERVER_ROOT_URL=http://localhost:3000
+            - GF_INSTALL_PLUGINS=grafana-polystat-panel,bessler-pictureit-panel,marcuscalidus-svg-panel
+        ports:
+            - "3000:3000"
+        volumes:
+            - grafana_lib:/var/lib/grafana
+            - ./provisioning/datasources/influxdb.yaml:/etc/grafana/provisioning/datasources/influxdb.yaml
+            - ./provisioning/dashboards:/etc/grafana/provisioning/dashboards
+        depends_on:
+            - influxdb
 volumes:
     column_db11_data:
     row_db11_data:
     row_db12_data:
-    # influxdb_data:
+    influxdb_data:
+    grafana_lib:
