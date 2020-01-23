@@ -6,8 +6,8 @@ RUN dpkg -i telegraf_1.13.0-1_amd64.deb
 RUN telegraf -sample-config -input-filter file -output-filter influxdb > file.conf
 
 # 常に起動するようにしたい
-RUN service telegraf start
-RUN telegraf --config home/file.conf
+#RUN service telegraf start
+#RUN telegraf --config home/file.conf
 
 #protobuf-c-compiler libprotobuf-c-dev wget make  build-essential postgresql-server-dev-11
 #RUN apt-get update && apt-get install -y protobuf-c-compiler libprotobuf-c0-dev wget make postgresql-server-dev-10 build-essential
