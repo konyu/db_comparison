@@ -11,7 +11,7 @@ CREATE FOREIGN TABLE csv
 (
     measurement_name TEXT,
     time BIGINT,
-    date_time DATE,
+    date_time timestamp,
     date DATE,
     date2 TEXT,
     browser  TEXT,

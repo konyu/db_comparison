@@ -17,7 +17,7 @@ psql -f home/column_init_same_influxdb.sql -U postgres -h localhost -p 54321
 
 ## 行指向普通のPostgresにテーブルを作成して、CSCデータを挿入
 
-psql -f home/column_init_same_influxdb.sql -U postgres -h localhost -p 5432
+psql -f home/row_init_same_influxdb.sql -U postgres -h localhost -p 5432
 
 
 -----
@@ -186,3 +186,18 @@ order by date2, country;
 
 Time: 42.970 ms
 ```
+
+
+SELECT
+    hour,
+    country,
+    SUM(field_one)
+FROM
+   csv, date_trunc('hour', date_time) as hour
+WHERE
+    time > 1577836800000 and time < 1578700799000
+group by 1, country
+order by 1, country;
+
+
+hour
